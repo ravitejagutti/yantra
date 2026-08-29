@@ -6,6 +6,12 @@
 
 **Version:** 0.1.0 | **Python:** 3.11+ | **License:** MIT
 
+📖 **[ARCHITECTURE.md](ARCHITECTURE.md)** - the "why" behind every
+non-obvious decision here (config resolution, the Windows-specific fixes,
+the `--no-mcp` default, native hooks/skills instead of a subprocess
+wrapper), plus an FAQ for questions like "is this safe" and "how do I know
+the numbers aren't cherry-picked."
+
 ---
 
 ## Status & Limitations
@@ -286,7 +292,8 @@ yantra-v1/
 ├── .env.example               # Environment variable template (no required vars)
 ├── .gitignore                 # Git ignore rules
 ├── LICENSE                    # MIT license
-└── README.md                  # This file
+├── README.md                  # This file
+└── ARCHITECTURE.md            # Design decisions, the "why", FAQ
 ```
 
 ---
