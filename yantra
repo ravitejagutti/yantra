@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Yantra Global Launcher - thin OS-native stub.
+# All actual logic (default to "launch yantra", setup, flags) lives in
+# yantra.py, which runs identically on every OS. This file exists only
+# because macOS/Linux shells need an executable file (any name) with a
+# shebang to resolve a bare command like "yantra" from PATH - see
+# yantra.bat for the equivalent Windows stub.
+#
+# Usage:
+#   yantra          Launch enhanced Claude session (with Headroom if installed)
+#   yantra -v       Verbose mode
+#   yantra setup    One-time: install Headroom
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec python3 "$DIR/yantra.py" "$@"

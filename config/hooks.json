@@ -1,0 +1,28 @@
+{
+  "hooks": [
+    {
+      "id": "safety_gates",
+      "type": "PreToolUse",
+      "enabled": true,
+      "description": "Block destructive operations before execution. Registered with Claude Code itself via `yantra install` - this entry documents the rules; hooks/safety_gates.js hardcodes the actual patterns.",
+      "handler": "../hooks/safety_gates.js",
+      "rules": [
+        "rm -rf",
+        "git reset --hard",
+        "git rebase -i",
+        "DELETE FROM",
+        "DROP TABLE",
+        "truncate table",
+        "git push --force"
+      ],
+      "requires_consent": true
+    }
+  ],
+
+  "safety_settings": {
+    "block_dangerous_commands": true,
+    "require_confirmation": false,
+    "log_blocked_operations": true,
+    "whitelist_patterns": []
+  }
+}

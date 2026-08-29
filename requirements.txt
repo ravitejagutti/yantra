@@ -1,0 +1,17 @@
+# Yantra v1 - Zero external dependencies!
+#
+# Yantra v1 uses only Python standard library:
+# - argparse (CLI)
+# - subprocess (process management)
+# - pathlib (cross-platform paths)
+# - json (config parsing)
+# - sys (system utilities)
+# - os (environment)
+#
+# Python 3.11+ required
+
+# No external packages needed for v1.0.0
+
+# Future versions (v1.1+) will add:
+# - anthropic  (Claude API for agent loops)
+# - pydantic   (config validation)
