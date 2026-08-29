@@ -54,7 +54,7 @@ Docs: https://github.com/gutti-raviteja4/yantra-v1
         """,
     )
 
-    parser.add_argument("--version", action="version", version="%(prog)s 1.0.0")
+    parser.add_argument("--version", action="version", version="%(prog)s 0.1.0")
     parser.add_argument(
         "-v", "--verbose",
         action="store_true",

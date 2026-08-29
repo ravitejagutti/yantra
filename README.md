@@ -1,10 +1,37 @@
-# 🛟 Yantra v1 - Enhanced Claude Sessions
+# 🛟 Yantra - Enhanced Claude Sessions
+
+[![Tests](https://github.com/gutti-raviteja4/yantra-v1/actions/workflows/tests.yml/badge.svg)](https://github.com/gutti-raviteja4/yantra-v1/actions/workflows/tests.yml)
 
 **Launches Claude CLI with token optimization ([Headroom](https://github.com/headroomlabs-ai/headroom)), plus an optional safety hook and context-analysis skill registered directly with Claude Code.**
 
-**Version:** 1.0.0 | **Status:** Ready to Use | **Python:** 3.11+ | **License:** MIT
+**Version:** 0.1.0 | **Python:** 3.11+ | **License:** MIT
 
 ---
+
+## Status & Limitations
+
+Read this before relying on it - stated plainly rather than left for you to discover:
+
+- **Tested on Windows.** macOS/Linux code paths exist (the `yantra` shell
+  stub, POSIX path handling throughout) and pass CI's unit tests on both,
+  but haven't been exercised end-to-end (a real `yantra` launch) on real
+  Mac/Linux hardware yet. If you hit something there, please open an issue.
+- **The evidence behind the token-optimization numbers is a handful of
+  real, measured test runs** (documented below with exact figures) - not a
+  benchmark suite. Results ranged from *worse* (trivial prompts, nothing to
+  compress) to *44% cheaper* on one realistic content-heavy task tested so
+  far. Your mileage will vary by workload - see
+  [Configuration](#configuration) for the actual numbers and why.
+- **The safety hook is pattern-matching, not a security boundary.** It
+  catches the obvious destructive commands (`rm -rf`, `git reset --hard`,
+  etc.) as a convenience. It's straightforward to write a destructive
+  command that doesn't match its patterns - don't rely on it as your only
+  safety net.
+- **Automated tests exist** (`tests/`, run via CI on Windows/Linux/macOS)
+  for the pure logic - config loading, launch-command resolution, the hook
+  merge/idempotency logic, and the real `safety_gates.js` hook script.
+  They don't cover a live end-to-end `yantra` launch against real Claude/
+  Headroom - that's still manually verified.
 
 ## Quick Start
 
@@ -253,11 +280,13 @@ yantra-v1/
 ├── skills/                    # Skill source templates
 │   └── context-analysis/
 │       └── SKILL.md          # Installed to ~/.claude/skills/ by `yantra install`
+├── tests/                     # unittest suite - see Testing section below
+├── .github/workflows/         # CI - runs tests/ on every push (Win/Linux/macOS)
 ├── requirements.txt           # Python dependencies (none!)
-├── .env.example              # Credentials template
-├── .gitignore                # Git ignore rules
-├── LICENSE                   # MIT license
-└── README.md                 # This file
+├── .env.example               # Environment variable template (no required vars)
+├── .gitignore                 # Git ignore rules
+├── LICENSE                    # MIT license
+└── README.md                  # This file
 ```
 
 ---
@@ -305,7 +334,7 @@ Shows detailed initialization steps and session information.
     }
   },
   "environment": {
-    "YANTRA_VERSION": "1.0.0"
+    "YANTRA_VERSION": "0.1.0"
   },
   "headroom": {
     "enabled": true,
@@ -466,6 +495,29 @@ Requires Python 3.11+ and Node.js 20+ (for Claude CLI).
 
 ---
 
+## Testing
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+Also zero extra dependencies - `unittest` is standard library, same
+philosophy as the rest of the project. Runs automatically on Windows,
+Linux, and macOS via GitHub Actions on every push (see the badge at the
+top). Covers the pure logic: config loading, `_build_launch_command()`'s
+priority resolution (the most important piece of business logic in this
+codebase - decides Headroom-wrapped vs plain launch), the hook-merge
+idempotency logic behind `yantra install`/`uninstall`, and the real
+`safety_gates.js` hook script via `node` (not a mock of its behavior - the
+actual script, fed real stdin JSON, exactly as Claude Code would).
+
+Doesn't cover a live end-to-end `yantra` launch against real Claude/
+Headroom - that needs credentials CI doesn't have, and is still manually
+verified (see the real measured numbers in
+[Configuration](#configuration)).
+
+---
+
 ## Troubleshooting
 
 ### "Claude CLI not found"
@@ -536,18 +588,21 @@ Shows detailed initialization and context injection info.
 
 ## Roadmap
 
-### v1.0 (Current) ✅
+### v0.1 (Current) ✅
 - Session launcher, cross-platform (`yantra` command)
 - Token optimization via Headroom, verified with real measured savings
 - Safety hook + context-analysis skill, registered natively with Claude Code
 - Config + CLI toggles for everything optional
+- Automated tests + CI on Windows/Linux/macOS for the pure logic
 
-### v1.1 (Next)
+### v0.2 (Next)
+- Real macOS/Linux end-to-end validation (not just unit tests) - see
+  [Status & Limitations](#status--limitations)
 - Multi-turn cache-reuse measurement (does Headroom's cost benefit
   amortize over a long session? - open question, see Configuration)
 - Additional native skills
 
-### v1.2 (Future)
+### v1.0 (Future - once the above is validated)
 - Multi-agent orchestration
 - Subagent delegation
 
@@ -581,4 +636,5 @@ Email: gutti.raviteja4@gmail.com
 
 ---
 
-**Ready to use!** Run `yantra -h` for help.
+Run `yantra -h` for help. See [Status & Limitations](#status--limitations)
+above before relying on this for anything important.

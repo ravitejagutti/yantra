@@ -6,7 +6,7 @@ from .validator import EnvironmentValidator
 from .context import ContextInjector
 from .hooks import HookManager
 
-__version__ = "1.0.0"
+__version__ = "0.1.0"
 __all__ = [
     "SessionLauncher",
     "ConfigLoader",
