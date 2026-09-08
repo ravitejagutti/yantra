@@ -637,8 +637,8 @@ MIT License - See LICENSE file for details
 
 ## Author
 
-**Ravi Teja Gutakonda**  
-Sr. QA Engineer → AI/ML Engineer  
+**Ravi Teja Gutti**  
+AI/ML Engineer  
 Email: gutti.raviteja4@gmail.com
 
 ---

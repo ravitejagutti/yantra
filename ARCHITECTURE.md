@@ -12,7 +12,7 @@ yantra (shell stub) → python yantra.py → SessionLauncher.initialize() → st
 ```
 
 `yantra` / `yantra.bat` are deliberately dumb one-line passthroughs to
-`python yantra.py` — see [§6](#6-two-shell-stubs-not-one-cross-platform-script)
+`python yantra.py` — see [§8](#8-two-shell-stubs-not-one-cross-platform-script)
 for why there are two of them instead of one.
 
 `initialize()` runs four steps:
@@ -30,7 +30,7 @@ for why there are two of them instead of one.
    sent to Claude.** Don't confuse this with prompt injection — nothing
    here reaches the model. Real context delivery to Claude goes through
    Claude Code's own native mechanisms (`CLAUDE.md`, skills) — see
-   [§6](#6-hooks--skills-are-registered-natively-not-injected-via-subprocess).
+   [§7](#7-hooks--skills-are-registered-natively-not-injected-via-subprocess).
 4. **`HookManager.load_hooks()`** reads `hooks.json` for a console summary
    and validation only. It does **not** register anything with Claude
    Code — that's a separate, explicit step (`yantra install`).
