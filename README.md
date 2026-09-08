@@ -1,6 +1,6 @@
 # 🛟 Yantra - Enhanced Claude Sessions
 
-[![Tests](https://github.com/gutti-raviteja4/yantra-v1/actions/workflows/tests.yml/badge.svg)](https://github.com/gutti-raviteja4/yantra-v1/actions/workflows/tests.yml)
+[![Tests](https://github.com/ravitejagutti/yantra/actions/workflows/tests.yml/badge.svg)](https://github.com/ravitejagutti/yantra/actions/workflows/tests.yml)
 
 **Launches Claude CLI with token optimization ([Headroom](https://github.com/headroomlabs-ai/headroom)), plus an optional safety hook and context-analysis skill registered directly with Claude Code.**
 
@@ -263,7 +263,7 @@ When `SessionLauncher.initialize()` runs, here's what happens:
 ## Project Structure
 
 ```
-yantra-v1/
+yantra/
 ├── yantra.py                  # Main CLI entry point (all logic lives here)
 ├── yantra.bat                 # Windows stub - forwards to yantra.py
 ├── yantra                     # macOS/Linux stub - forwards to yantra.py
@@ -626,12 +626,14 @@ Contributions welcome! Please:
 2. Add tests for new features
 3. Update documentation
 4. Submit PR with clear description
+5. Follow the [commit message convention](CONTRIBUTING.md)
 
 ---
 
 ## License
 
-MIT License - See LICENSE file for details
+No license file yet - all rights reserved by default. Not licensed for
+reuse, modification, or redistribution until one is added.
 
 ---
 

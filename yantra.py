@@ -51,7 +51,7 @@ Examples:
   python yantra.py --help                  # Show this help
 
 Works in: Terminal, PowerShell, cmd.exe, Bash
-Docs: https://github.com/gutti-raviteja4/yantra-v1
+Docs: https://github.com/ravitejagutti/yantra
         """,
     )
 
