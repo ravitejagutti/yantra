@@ -20,6 +20,7 @@ import subprocess
 import argparse
 from pathlib import Path
 
+from launcher import __version__
 from launcher.session import SessionLauncher
 from launcher import claude_extras
 from launcher.validator import HEADROOM_VENV_DIR, get_headroom_venv_python
@@ -54,7 +55,7 @@ Docs: https://github.com/gutti-raviteja4/yantra-v1
         """,
     )
 
-    parser.add_argument("--version", action="version", version="%(prog)s 0.1.0")
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument(
         "-v", "--verbose",
         action="store_true",

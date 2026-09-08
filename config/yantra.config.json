@@ -1,6 +1,5 @@
 {
-  "version": "0.1.0",
-  "description": "Yantra v1 configuration - Session enhancement settings",
+  "description": "Yantra configuration - Session enhancement settings",
 
   "skills": {
     "context_analysis": {
