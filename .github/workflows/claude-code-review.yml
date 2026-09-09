@@ -10,8 +10,18 @@ on:
     #   - "src/**/*.js"
     #   - "src/**/*.jsx"
 
+# Cancel a still-running review on a PR if it gets pushed to again - only the
+# latest push is worth reviewing, and each run is a billed Claude API call.
+concurrency:
+  group: claude-code-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   claude-review:
+    # Skip draft PRs - the `ready_for_review` trigger above still fires a
+    # review once the author actually wants eyes on it.
+    if: github.event.pull_request.draft == false
+
     # Optional: Filter by PR author
     # if: |
     #   github.event.pull_request.user.login == 'external-contributor' ||
