@@ -34,10 +34,11 @@ Read this before relying on it - stated plainly rather than left for you to disc
   command that doesn't match its patterns - don't rely on it as your only
   safety net.
 - **Automated tests exist** (`tests/`, run via CI on Windows/Linux/macOS)
-  for the pure logic - config loading, launch-command resolution, the hook
-  merge/idempotency logic, and the real `safety_gates.js` hook script.
-  They don't cover a live end-to-end `yantra` launch against real Claude/
-  Headroom - that's still manually verified.
+  for the pure logic - config loading, launch-command resolution, the
+  hook/skill auto-discovery and sync logic (including picking up newly
+  added files and pruning removed ones), and the real `safety_gates.js`
+  hook script. They don't cover a live end-to-end `yantra` launch against
+  real Claude/Headroom - that's still manually verified.
 
 ## Quick Start
 
@@ -244,7 +245,7 @@ Claude Code. That's a separate, explicit step: see
 | **EnvironmentValidator** | `launcher/validator.py` | Validates Node.js, Claude CLI, Headroom |
 | **ContextInjector** | `launcher/context.py` | Gathers git branch, system info, working directory (for display) |
 | **HookManager** | `launcher/hooks.py` | Loads `hooks.json` for console summary/validation |
-| **claude_extras** | `launcher/claude_extras.py` | `yantra install`/`uninstall` - registers the safety hook + skill with Claude Code itself |
+| **claude_extras** | `launcher/claude_extras.py` | `yantra install`/`uninstall` - auto-discovers and registers everything in `hooks/*.js` and `skills/*/SKILL.md` with Claude Code itself |
 
 ### Initialization Checklist
 
@@ -291,6 +292,7 @@ yantra/
 ├── requirements.txt           # Python dependencies (none!)
 ├── .env.example               # Environment variable template (no required vars)
 ├── .gitignore                 # Git ignore rules
+├── CLAUDE.md                  # Git/GitHub guardrails Claude Code follows in this repo
 ├── LICENSE                    # MIT license
 ├── README.md                  # This file
 └── ARCHITECTURE.md            # Design decisions, the "why", FAQ
@@ -427,8 +429,9 @@ see [Hooks & Skills](#hooks--skills)):
 Reference material for what an enhanced session should know about (git
 context, safety gates). Not injected into Claude automatically - see
 [Hooks & Skills](#hooks--skills) for how Yantra actually delivers
-equivalents to Claude, and `CLAUDE.md` for project-level instructions if
-you want more.
+equivalents to Claude, and [`CLAUDE.md`](CLAUDE.md) for the git/GitHub
+guardrails Claude Code itself follows when working in this repo
+(commit/push confirmation, branch naming, force-push handling).
 
 ---
 
@@ -439,16 +442,21 @@ on-demand context - hooks (`~/.claude/settings.json`) and skills
 (`~/.claude/skills/`) - that are more capable than anything Yantra could
 deliver by wrapping Claude in a subprocess. So Yantra doesn't try to inject
 a custom system prompt or gather context for you to hand to Claude; instead,
-`yantra install` registers two pieces directly with Claude Code itself:
+`yantra install` auto-discovers everything in `hooks/*.js` and
+`skills/<name>/SKILL.md` and registers it directly with Claude Code itself.
+Right now that's one hook and one skill, but nothing about the mechanism is
+hardcoded to those two - drop another `.js` hook into `hooks/` or another
+`SKILL.md` into `skills/`, re-run `install`, and it's picked up with no code
+changes:
 
 ```bash
 yantra install      # preview the exact change, then confirm
 yantra uninstall     # remove exactly what install added
 ```
 
-**1. Safety hook** - blocks destructive commands before they run, for
-*every* Claude Code session on the machine (not just ones launched via
-`yantra`):
+**Hooks** (`hooks/*.js`) - currently one, the safety hook, which blocks
+destructive commands before they run, for *every* Claude Code session on
+the machine (not just ones launched via `yantra`):
 
 - `rm -rf` / `Remove-Item -Recurse` - file deletion
 - `git reset --hard` - discard work
@@ -462,17 +470,24 @@ stdout-JSON hook protocol) - not a Yantra-side wrapper. It fails **open** on
 any parse error or unexpected input, on purpose: a bug in it should never be
 able to silently block every tool call.
 
-**2. `context-analysis` skill** - summarizes git branch, status, and
-uncommitted changes. Invoke with `/context-analysis`, or Claude loads it
-automatically when relevant. As a skill (not a hook that fires on every
-tool call), it costs zero tokens until actually used - the right fit for a
-project about *cutting* token usage.
+**Skills** (`skills/<name>/SKILL.md`) - currently one, `context-analysis`,
+which summarizes git branch, status, and uncommitted changes. Invoke with
+`/context-analysis`, or Claude loads it automatically when relevant. As a
+skill (not a hook that fires on every tool call), it costs zero tokens
+until actually used - the right fit for a project about *cutting* token
+usage.
 
 Both are global, user-level changes (`~/.claude/settings.json` and
 `~/.claude/skills/`) - deliberately **not** run automatically by `yantra
 setup` or a normal launch. `install`/`uninstall` show you exactly what
 they're about to change and ask for confirmation first (`-y` to skip the
-prompt), and never touch any other hooks or skills already in your config.
+prompt). Re-running `install` resyncs to whatever's currently in `hooks/`
+and `skills/` - a newly added file gets registered, a deleted one gets
+pruned - without ever touching hooks or skills that came from somewhere
+else. Skill installs are tracked in a manifest
+(`~/.claude/skills/.yantra-manifest.json`) so `uninstall`/resync only ever
+removes skill folders Yantra itself installed, never one you added by
+hand.
 
 ---
 
